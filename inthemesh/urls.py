@@ -19,6 +19,7 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^p/(?P<pk>[0-9])/(?P<slug>.*?)$', 'podcast.views.p'),
     url(r'^(?P<page>[0-9])/?$', 'podcast.views.index'),
     url(r'^/?$', 'podcast.views.index')
 ]

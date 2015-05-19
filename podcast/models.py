@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 import os
 
+RAW_AUDIO = os.path.join('audio', 'raw')
+FINAL_AUDIO = os.path.join('audio', 'final')
 
 def build_filename(path):
     def wrapper(instance, filename):
@@ -13,8 +15,11 @@ def build_filename(path):
 
 class Podcast(models.Model):
     title = models.CharField(max_length=64)
-    audio = models.FileField(upload_to=build_filename(
-        os.path.join(settings.MEDIA_ROOT, 'audio')
+    raw_audio = models.FileField(upload_to=build_filename(
+        os.path.join(settings.MEDIA_ROOT, RAW_AUDIO)
+    ))
+    final_audio = models.FileField(upload_to=build_filename(
+        os.path.join(settings.MEDIA_ROOT, FINAL_AUDIO)
     ))
     description = models.TextField()
     blurb = models.TextField(max_length=64)

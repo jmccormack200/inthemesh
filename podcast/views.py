@@ -20,4 +20,7 @@ def index(request, page=0):
 
 def p(request, pk, slug=None):
     podcast = Podcast.objects.get(id=pk)
-    return render(request, 'p.htm', {'podcast': podcast})
+    urls = podcast.audio_urls()
+    return render(request, 'p.htm',
+        {'podcast': podcast, 'final': urls['final'], 'raw': urls['raw']}
+    )

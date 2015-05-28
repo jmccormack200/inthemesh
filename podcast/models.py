@@ -27,19 +27,19 @@ class Podcast(models.Model):
         os.path.join(settings.MEDIA_ROOT, FINAL_AUDIO)
     ))
     description = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
+    pub_date = models.DateField(auto_now_add=True)
     blurb = models.TextField(max_length=64)
     slug = models.SlugField(max_length=64, blank=True)
 
-    def audio_urls(self):
-        return {
-            'final': '/media/audio/final/{}-{}.mp3'.format(
-                format(self.episode_number, '02'),
-                self.slug),
-            'raw': '/media/audio/raw/{}-{}-raw.mp3'.format(
+    def raw_url(self):
+        return '/media/audio/raw/{}-{}-raw.mp3'.format(
                 format(self.episode_number, '02'),
                 self.slug)
-        }
+
+    def final_url(self):
+        return '/media/audio/final/{}-{}.mp3'.format(
+                format(self.episode_number, '02'),
+                self.slug)
 
     def save(self, *args, **kwargs):
         super(Podcast, self).save(*args, **kwargs)

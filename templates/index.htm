@@ -1,16 +1,19 @@
 {% extends '_base.htm' %}
+{% load staticfiles %}
 
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
+        <ul class="collapsible popout" data-collapsible="accordion">
         {% for p in podcasts %}
-          <div class="row">
-            <div class="s12">
-              <a href="/p/{{ p.pk }}/{{ p.slug }}"><h5>{{ p }}</h5></a>
+          <li>
+            <div class="collapsible-header{% if forloop.first %} active{% endif %}">{{ p.title }} ({{ p.pub_date }})</div>
+            <div class="collapsible-body">
+              <p>{{ p.description }}</p>
+              <p><audio src="{{ p.final_url }}"></p>
+              <p class="raw"><a href="{{ p.raw_url }}">Download raw audio.</a></p>
             </div>
-          </div>
-          <div class="row">
-            <div class="s12">{{ p.blurb }}</div>
-          </div>
+          </li>
         {% endfor %}
+        </ul>
 {% endblock %}

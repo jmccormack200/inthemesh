@@ -13,12 +13,36 @@ app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 
+/* Setup auth stuff */
+app.use(app.router);
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(function(username, password, done) {
+    process.nextTick(function() {
+        // Auth check
+    });
+}));
+
 /* Enable static file serving from /static */
 app.use('/static', express.static('static'));
 
 app.get('/', function(req, res) {
     res.render('index', {
         title: 'Welcome'
+    });
+});
+
+app.get('/login', function(req, res, next) {
+    res.render('login', {
+        title: 'Login'
+    });
+});
+
+app.post('/login', function(req, res) {
+    passport.authenticate('local', {
+        successRedirect: '/index',
+        failureRedirect: '/login'
     });
 });
 

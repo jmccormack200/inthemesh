@@ -1,10 +1,12 @@
 // https://orchestrate.io/blog/2014/06/26/build-user-authentication-with-node-js-express-passport-and-orchestrate/
+// http://www.sitepoint.com/local-authentication-using-passport-node-js/
 
 var express = require('express'),
     app = express(),
     http = require('http').Server(app),
     swig = require('swig'),
     cookie_parser = require('cookie-parser'),
+    mongoose = require('mongoose'),
     passport = require('passport'),
     LocalStrategy = require('passport-local');
 

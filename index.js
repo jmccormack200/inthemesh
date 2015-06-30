@@ -46,8 +46,13 @@ app.use('/user', accountRoutes);
 app.use('/admin', adminRoutes);
 
 app.get('/', function(req, res) {
+    var p_title = 'Welcome';
+    if (req.user) {
+        p_title += ', ' + req.user.username;
+    }
+
     res.render('index', {
-        title: 'Welcome'
+        title: p_title
     });
 });
 

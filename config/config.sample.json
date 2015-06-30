@@ -1,0 +1,26 @@
+{
+  "development": {
+    "host": "localhost",
+    "database": "djabber",
+    "port": 27017,
+    "username": "dev",
+    "password": "dev",
+    "secret": "CHANGEME"
+  },
+  "test": {
+    "host": "localhost",
+    "database": "djabber",
+    "port": 27017,
+    "username": "test",
+    "password": "test",
+    "secret": "CHANGEME"
+  },
+  "production": {
+    "host": "localhost",
+    "database": "djabber",
+    "port": 27017,
+    "username": "prod",
+    "password": "prod",
+    "secret": "CHANGEME"
+  }
+}

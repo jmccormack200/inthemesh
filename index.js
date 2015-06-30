@@ -1,14 +1,19 @@
-// https://orchestrate.io/blog/2014/06/26/build-user-authentication-with-node-js-express-passport-and-orchestrate/
-// http://www.sitepoint.com/local-authentication-using-passport-node-js/
-
 var express = require('express'),
     app = express(),
     http = require('http').Server(app),
     swig = require('swig'),
-    cookie_parser = require('cookie-parser'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    session = require('express-session'),
     mongoose = require('mongoose'),
     passport = require('passport'),
-    LocalStrategy = require('passport-local');
+    LocalStrategy = require('passport-local').Strategy,
+    flash = require('connect-flash');
+
+var models = require('./models');
+
+var env = process.env.NODE_ENV || 'development';
+var config = require('./config/config.json')[env];
 
 /* Setup Swig template engine */
 app.engine('html', swig.renderFile);
@@ -16,37 +21,65 @@ app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 
 /* Setup auth stuff */
-app.use(app.router);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({secret: config.secret, cookie: {maxAge: 60000}}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
-passport.use(new LocalStrategy(function(username, password, done) {
-    process.nextTick(function() {
-        // Auth check
-    });
-}));
+/* Setup Passport itself */
+passport.use(new LocalStrategy(models.User.authenticate()));
+passport.serializeUser(models.User.serializeUser());
+passport.deserializeUser(models.User.deserializeUser());
 
 /* Enable static file serving from /static */
 app.use('/static', express.static('static'));
 
 app.get('/', function(req, res) {
     res.render('index', {
-        title: 'Welcome'
+        title: 'Welcome',
+        user: req.user
     });
 });
 
 app.get('/login', function(req, res, next) {
     res.render('login', {
-        title: 'Login'
+        title: 'Login',
+        error: req.flash('error')
     });
 });
 
-app.post('/login', function(req, res) {
-    passport.authenticate('local', {
-        successRedirect: '/index',
-        failureRedirect: '/login'
+app.get('/register', function(req, res) {
+    res.render('register', {
+        title: 'Register'
     });
 });
+
+app.post('/register', function(req, res) {
+    models.User.register(new models.User({ username: req.body.username }),
+        req.body.password,
+        function (err, user) {
+            if (err) {
+                return res.render('register', {
+                    title: 'Register',
+                    error: err,
+                    user: user
+                });
+            }
+
+            passport.authenticate('local')(req, res, function() {
+                res.redirect('/');
+            });
+        });
+});
+
+app.post('/login',
+    passport.authenticate('local', { successRedirect: '/',
+                                     failureRedirect: '/login',
+                                     successFlash: 'Logged In',
+                                     failureFlash: true })
+);
 
 http.listen(3000, function() {
     console.log('listening on *:3000');

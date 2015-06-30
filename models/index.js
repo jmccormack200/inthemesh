@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 var env      = process.env.NODE_ENV || 'development';
 var config   = require(__dirname + '/../config/config.json')[env];
 
-var user   = require('./user');
+var user     = require('./user');
+var podcast  = require('./podcast');
 
 var uri = 'mongodb://' + config.username + ':' + config.password + '@' + config.host + ':' + config.port + '/' + config.database;
 
@@ -15,5 +16,5 @@ db.once('open', function(cb) {
 
 module.exports = {
     User: user,
-      db: db
+ Podcast: podcast
 };

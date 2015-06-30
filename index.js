@@ -11,6 +11,8 @@ var express = require('express'),
     flash = require('connect-flash');
 
 var models = require('./models');
+var accountRoutes = require('./routes/accounts.js');
+var adminRoutes = require('./routes/admin.js');
 
 var env = process.env.NODE_ENV || 'development';
 var config = require('./config/config.json')[env];
@@ -23,7 +25,12 @@ app.set('views', __dirname + '/views');
 /* Setup auth stuff */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({secret: config.secret, cookie: {maxAge: 60000}}));
+app.use(session({
+    secret: config.secret,
+    cookie: {maxAge: 60000},
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -35,60 +42,16 @@ passport.deserializeUser(models.User.deserializeUser());
 
 /* Enable static file serving from /static */
 app.use('/static', express.static('static'));
+app.use('/user', accountRoutes);
+app.use('/admin', adminRoutes);
 
 app.get('/', function(req, res) {
     res.render('index', {
-        title: 'Welcome',
-        user: req.user
+        title: 'Welcome'
     });
 });
 
-app.get('/login', function(req, res, next) {
-    res.render('login', {
-        title: 'Login',
-        error: req.flash('error')
-    });
-});
-
-app.get('/register', function(req, res) {
-    res.render('register', {
-        title: 'Register'
-    });
-});
-
-app.post('/register', function(req, res) {
-    models.User.register(new models.User({ username: req.body.username }),
-        req.body.password,
-        function (err, user) {
-            if (err) {
-                return res.render('register', {
-                    title: 'Register',
-                    error: err,
-                    user: user
-                });
-            }
-
-            passport.authenticate('local')(req, res, function() {
-                res.redirect('/');
-            });
-        });
-});
-
-app.post('/login',
-    passport.authenticate('local', { successRedirect: '/',
-                                     failureRedirect: '/login',
-                                     successFlash: 'Logged In',
-                                     failureFlash: true })
-);
-
-app.get('/admin', function(req, res) {
-    if (req.user && req.user.superuser === true) {
-        res.send('yep!');
-    }
-
-    res.send('nope!');
-});
-
+/* Serve it up hot and fresh */
 http.listen(3000, function() {
     console.log('listening on *:3000');
 });

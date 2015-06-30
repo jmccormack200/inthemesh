@@ -9,6 +9,11 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.plugin(passportLocalMongoose);
 
+UserSchema.pre('save', function(next) {
+	this.superuser = false;
+	next();
+});
+
 var User = mongoose.model('User', UserSchema, 'users');
 
 module.exports = User;

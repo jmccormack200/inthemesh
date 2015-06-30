@@ -14,13 +14,8 @@
       
       <div class="container">
         <div class="row">
-          <div class="col s6 offset-s4 brand"><img src="static/img/logo.png"></div>
+          <div class="col s6 offset-s4 brand"><img src="/static/img/logo.png"></div>
         </div>
-        {% if user and user.superuser == true %}
-        <div class="row">
-          <div class="col s6 offset-s4">Hello, {{ user.username }}.</div>
-        </div>
-        {% endif %}
       </div>
 
       <div class="container">

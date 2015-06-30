@@ -81,6 +81,14 @@ app.post('/login',
                                      failureFlash: true })
 );
 
+app.get('/admin', function(req, res) {
+    if (req.user && req.user.superuser === true) {
+        res.send('yep!');
+    }
+
+    res.send('nope!');
+});
+
 http.listen(3000, function() {
     console.log('listening on *:3000');
 });

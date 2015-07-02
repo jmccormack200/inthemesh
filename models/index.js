@@ -16,5 +16,6 @@ db.once('open', function(cb) {
 
 module.exports = {
     User: user,
- Podcast: podcast
+ Podcast: podcast,
+      db: db
 };

@@ -21,6 +21,7 @@ var config = require('./config/config.json')[env];
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
+if (env == 'development') swig.setDefaults({ cache: false });
 
 /* Setup auth stuff */
 app.use(bodyParser.json());

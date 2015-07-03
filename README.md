@@ -10,4 +10,4 @@ The webapp that distributes the stuff.
 4. Symlink the nginx configuration into nginx's `sites-enabled` directory.
 5. Start the app with forever, preferrably on boot: `forever start index.js`
 6. Restart nginx.
-7. Drink beers.
+7. Drink 6-7 beers.
